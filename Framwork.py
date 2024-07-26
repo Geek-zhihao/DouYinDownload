@@ -26,7 +26,7 @@ class Chromium_Framwork:
         '''
         self.playwright = sync_playwright().start()
         self.browser = self.playwright.chromium.launch(
-            headless=False, args=['--disable-blink-features=AutomationControlled'])
+            headless=True, args=['--disable-blink-features=AutomationControlled', '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'])
         self.context = self.browser.new_context()
         self.page = self.context.new_page()
 
@@ -159,48 +159,3 @@ class Chromium_Framwork:
         self.context.close()
         self.browser.close()
         self.playwright.stop()
-
-
-# 使用示例
-if __name__ == '__main__':
-    manager = Chromium_Framwork()
-    manager.start_browser()
-    manager.add_cookies("Cookie_1.json")
-    manager.intercept_requests([
-        ".*-sign\.douyinpic\.com.*",  # lf3-cdn-tos.bytegoofy.com
-        ".*lf3-cdn-tos\.bytegoofy\.com.*",  # *-sign.douyinpic.com
-        # lf6-cdn-tos.bytegoofy.com/obj/goofy/ies/douyin_web/async/9635*
-        "lf6-cdn-tos\.bytegoofy\.com/obj/goofy/ies/douyin_web/async/9635.*",
-        # lf6-cdn-tos.bytegoofy.com/obj/goofy/ies/douyin_web/async/feelgood*
-        "lf6-cdn-tos\.bytegoofy\.com/obj/goofy/ies/douyin_web/async/feelgood.*",
-        # lf6-cdn-tos.bytegoofy.com/obj/goofy/ies/douyin_web/async/FlowSDK*
-        "lf6-cdn-tos\.bytegoofy\.com/obj/goofy/ies/douyin_web/async/FlowSDK.*",
-        "lf3-pendah\.bytetos\.com",  # lf3-pendah.bytetos.com
-        # lf6-cdn-tos.bytegoofy.com/obj/goofy/ies/douyin_web/chunks/*
-        "lf6-cdn-tos\.bytegoofy\.com/obj/goofy/ies/douyin_web/chunks/.*",
-        ".*(png|ico)",
-        "data:"
-    ])
-    # manager.goto(
-    #     "https://www.douyin.com/user/MS4wLjABAAAA4OBM5NbxBG-b75Ty_ecsGjdCztO77e3YS9WW242tbLA")
-    manager.goto(
-        "https://www.douyin.com/user/MS4wLjABAAAAQizVwBD-8xw0ml6kjPhwFglH1TdiEIqziMJIZRielMCAEUHnCq6_hHVR-IXIG4k3")
-    # manager.keep_intercepting()  # 保持拦截功能常驻在后台
-    # manager.scroll_page(0, 70000)
-    # manager.page_wait(1)
-    # manager.scroll_page(0, 70000)
-
-    def handle_status(status):
-        with open("filename.json", 'a', encoding='utf-8') as f:
-            json.dump(status, f, ensure_ascii=False)
-        print(f"Saved response to filename.json")
-    manager.filter_responses(
-        "https://www.douyin.com/aweme/v1/web/aweme/post/", callback=handle_status)
-    manager.page_wait(4)
-
-    manager.page_wait(4)
-    manager.find_element("dy-account-close")
-    manager.page_wait(30)
-    title = manager.get_title()
-    print(f"Page title: {title}")
-    manager.close()
