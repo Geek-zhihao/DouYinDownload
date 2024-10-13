@@ -46,7 +46,7 @@ class Process:
 
             # 如果网络中断，点击刷新
             if element_text == "服务异常，重新刷新拉取数据":
-                self.framwork.find_element("NLLHhkaY").click()
+                self.framwork.find_element("eP8y9zir").click()
 
             # 如果出现页面最底部提示文字，跳出无限循环，否则继续循环
             elif element_text == "暂时没有更多了":
