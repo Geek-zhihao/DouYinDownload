@@ -9,5 +9,5 @@
 -->
 # DouYinDownload
 An open source tool based on playwright to download works from Douyin author's homepage
-"media_type": 2 -> 图文
-"media_type": 4 -> 视频
+"aweme_type": 68 -> 图文
+"aweme_type": 0 -> 视频

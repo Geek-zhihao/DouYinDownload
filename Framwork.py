@@ -26,7 +26,7 @@ class Chromium_Framwork:
         '''
         self.playwright = sync_playwright().start()
         self.browser = self.playwright.chromium.launch(
-            headless=True, args=['--disable-blink-features=AutomationControlled', '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'])
+            headless=False, args=['--disable-blink-features=AutomationControlled', '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'])
         self.context = self.browser.new_context()
         self.page = self.context.new_page()
 
