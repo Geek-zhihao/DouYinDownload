@@ -80,19 +80,6 @@ class Chromium_Framwork:
         title = self.page.title()
         return title
 
-    def find_element(self, attribute: str):
-        '''
-        使用选择器寻找指定元素
-
-        Arg:
-            locator(str):元素的id
-
-        Return:
-            locator(element):选择对象
-        '''
-        locator = self.page.locator(f".{attribute}")
-        return locator
-
     def add_cookies(self, cookies_filepath: str):
         '''
         携带Cookie进行访问
@@ -105,30 +92,33 @@ class Chromium_Framwork:
             Cookies = json.load(f)
         self.context.add_cookies(Cookies)
 
-    def filter_responses(self, request_url: str, callback=None):
+    def filter_and_save_responses(self, request_url: str, file_path: str, file_name: str):
         '''
-        筛选特定的响应，将响应返回给回调函数处理
+        筛选特定的响应，将响应保存等待后续处理
 
         Arg:
             request_url(str):请求的部分URL
-            callback(None):回调函数，抓取到响应立即执行回调函数
+            file_path(str):文件保存路径
+            file_name(str):文件名
 
         '''
+        save_path = file_path + file_name
         self.page.on(
-            "response", lambda response: handle_response(response))  # 订阅响应
+            "response", lambda responses: save_responses(responses))  # 订阅响应
 
-        def handle_response(response):
+        def save_responses(response):
 
             # 检查响应的URL是否包含所需的请求URL
             if request_url in response.url:
                 try:
-                    result = response.json()  # 将响应内容解析为JSON格式
+                    result = response.json().get('aweme_list', [])  # 将响应内容解析为JSON格式
                 except ValueError:
-                    result = None  # 如果响应内容不是有效的JSON，捕获异常并设置 result 为 None
+                    result = []  # 如果响应内容不是有效的JSON，捕获异常并设置 result 为 None
 
-                # 如果提供了回调函数，且解析成功，调用回调函数并传递结果
-                if callback:
-                    callback(result)
+                # 打开json文件进行写入
+                with open(save_path, 'a', encoding='utf-8') as file:
+                    json.dump(result, file, ensure_ascii=False, indent=4)
+                    print(f"Saved response to test.json")
 
     def intercept_requests(self, url_patterns: list):
         '''

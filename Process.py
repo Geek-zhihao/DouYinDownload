@@ -31,7 +31,6 @@ class Process:
 
         # 无限循环以滚动页面
         while True:
-            time.sleep(0.1)  # 防止滚动过快卡死
             self.framwork.scroll_page(
                 delta_x=0, delta_y=-100)  # 回滚100像素以防卡死
             self.framwork.scroll_page(
@@ -39,14 +38,15 @@ class Process:
             element_text = None  # 提前赋值以完成判断
 
             try:
-                element_text = self.framwork.find_element("gqga5U3W").inner_text(
-                    timeout=1)  # 尝试检查页面最底部提示文字，最大等待时间设为1ms
+                element_text = self.framwork.page.locator("xpath=/html/body/div[2]/div[1]/div[4]/div[2]/div/div/div/div[3]/div/div/div[2]/div[2]/div[2]/div").inner_text(
+                    timeout=100)  # 尝试检查页面最底部提示文字，最大等待时间设为100ms
             except:
                 pass
 
             # 如果网络中断，点击刷新
             if element_text == "服务异常，重新刷新拉取数据":
-                self.framwork.find_element("eP8y9zir").click()
+                self.framwork.page.locator(
+                    "xpath=/html/body/div[2]/div[1]/div[4]/div[2]/div/div/div/div[3]/div/div/div[2]/div[2]/div[2]/div/div/span").click()
 
             # 如果出现页面最底部提示文字，跳出无限循环，否则继续循环
             elif element_text == "暂时没有更多了":
