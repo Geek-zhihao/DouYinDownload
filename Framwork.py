@@ -115,10 +115,11 @@ class Chromium_Framwork:
                 except ValueError:
                     result = []  # 如果响应内容不是有效的JSON，捕获异常并设置 result 为 None
 
-                # 打开json文件进行写入
                 with open(save_path, 'a', encoding='utf-8') as file:
-                    json.dump(result, file, ensure_ascii=False, indent=4)
-                    print(f"Saved response to test.json")
+                    for item in result:
+                        json.dump(item, file, ensure_ascii=False, indent=4)
+                        file.write(',\n')
+                    print(f"Saved response to {file_name}")
 
     def intercept_requests(self, url_patterns: list):
         '''
